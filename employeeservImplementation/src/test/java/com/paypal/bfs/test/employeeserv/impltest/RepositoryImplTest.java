@@ -63,15 +63,15 @@ public class RepositoryImplTest {
         Mockito.doReturn(resultSet).when(preparedStatement).executeQuery();
         Mockito.when(resultSet.next()).thenReturn(true).thenReturn(false);
         Mockito.when(resultSet.getInt("id")).thenReturn(205);
-        Mockito.when(resultSet.getString("firstname")).thenReturn("pooja");
-        Mockito.when(resultSet.getString("lastname")).thenReturn("eaga");
-        Mockito.when(resultSet.getString("dob")).thenReturn("Nov 02 1993");
-        Mockito.when(resultSet.getString("line1")).thenReturn("3503 Aston Manor ct");
-        Mockito.when(resultSet.getString("line2")).thenReturn("apt 203");
-        Mockito.when(resultSet.getString("city")).thenReturn("Silver Spring");
-        Mockito.when(resultSet.getString("state")).thenReturn("MD");
+        Mockito.when(resultSet.getString("firstname")).thenReturn("venkata");
+        Mockito.when(resultSet.getString("lastname")).thenReturn("vanukuri");
+        Mockito.when(resultSet.getString("dob")).thenReturn("Nov 02 1992");
+        Mockito.when(resultSet.getString("line1")).thenReturn("380 Vista Court dr");
+        Mockito.when(resultSet.getString("line2")).thenReturn("apt 2311");
+        Mockito.when(resultSet.getString("city")).thenReturn("Plano");
+        Mockito.when(resultSet.getString("state")).thenReturn("TX");
         Mockito.when(resultSet.getString("country")).thenReturn("USA");
-        Mockito.when(resultSet.getInt("zip")).thenReturn(20904);
+        Mockito.when(resultSet.getInt("zip")).thenReturn(75074);
 
         Assert.assertEquals(getEmployee().getId(), repositoryImpl.retrive(205L).getId());
     }
@@ -84,12 +84,12 @@ public class RepositoryImplTest {
 
     public Address getAddress() {
         Address address = new Address();
-        address.setLine1("3503 Aston Manor ct");
-        address.setLine2("apt 203");
-        address.setCity("Silver Spring");
-        address.setState("MD");
+        address.setLine1("380 Vista Court dr");
+        address.setLine2("apt 2311");
+        address.setCity("Plano");
+        address.setState("TX");
         address.setCountry("USA");
-        address.setZipCode(20904);
+        address.setZipCode(75074);
         return address;
     }
 
@@ -97,9 +97,9 @@ public class RepositoryImplTest {
     public Employee getEmployee() {
         Employee emp = new Employee();
         emp.setId(205);
-        emp.setFirstName("pooja");
-        emp.setLastName("eaga");
-        emp.setDateOfBirth("Nov 02 1993");
+        emp.setFirstName("venkata");
+        emp.setLastName("vanukuri");
+        emp.setDateOfBirth("Nov 02 1992");
         emp.setAddress(getAddress());
         return emp;
 

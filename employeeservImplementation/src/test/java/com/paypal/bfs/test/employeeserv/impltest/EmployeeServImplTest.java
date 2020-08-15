@@ -82,9 +82,9 @@ public class EmployeeServImplTest {
     public Map<String, Object> getEmployeeRequestObj() {
         Map<String, Object> requestMap = new HashMap<>();
         requestMap.put("id", "205");
-        requestMap.put("firstName", "pooja");
-        requestMap.put("lastName", "eaga");
-        requestMap.put("date_of_birth", "Nov 02 1993");
+        requestMap.put("firstName", "Venkata");
+        requestMap.put("lastName", "vanukuri");
+        requestMap.put("date_of_birth", "Nov 02 1992");
         requestMap.put("address", getAddress());
 
         return requestMap;
@@ -92,12 +92,12 @@ public class EmployeeServImplTest {
 
     public Address getAddress() {
         Address address = new Address();
-        address.setLine1("3503 Aston Manor ct");
-        address.setLine2("apt 203");
-        address.setCity("Silver Spring");
-        address.setState("MD");
+        address.setLine1("380 Vista Court dr");
+        address.setLine2("apt 2311");
+        address.setCity("Plano");
+        address.setState("TX");
         address.setCountry("USA");
-        address.setZipCode(20904);
+        address.setZipCode(75074);
         return address;
     }
 
@@ -105,9 +105,9 @@ public class EmployeeServImplTest {
     public Employee getEmployee() {
         Employee emp = new Employee();
         emp.setId(205);
-        emp.setFirstName("pooja");
-        emp.setLastName("eaga");
-        emp.setDateOfBirth("Nov 02 1993");
+        emp.setFirstName("venkata");
+        emp.setLastName("vanukuri");
+        emp.setDateOfBirth("Nov 02 1992");
         emp.setAddress(getAddress());
         return emp;
 
