@@ -23,24 +23,24 @@ public class EmployeeResourceImpl implements EmployeeResource {
 
     private final IRepository iRepository;
 
-    public EmployeeResourceImpl(IRepository iRepository){
+    public EmployeeResourceImpl(IRepository iRepository) {
         this.iRepository = iRepository;
     }
 
 
     @Override
     public ResponseEntity<Employee> employeeGetById(String id) {
-        Long employeeId = Long.parseLong (id);
+        Long employeeId = Long.parseLong(id);
         try {
             Employee emp = iRepository.retrive(employeeId);
             ResponseEntity<Employee> responseEntity = new ResponseEntity<>(emp, getHttpHeaders(), HttpStatus.OK);
             return responseEntity;
-        }catch(SQLException sqle){
+        } catch (SQLException sqle) {
             sqle.printStackTrace();
             Employee emp = null;
             ResponseEntity<Employee> responseEntity = new ResponseEntity<>(emp, getHttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
             return responseEntity;
-        }catch(NullPointerException npe){
+        } catch (NullPointerException npe) {
             npe.printStackTrace();
             Employee emp = null;
             ResponseEntity<Employee> responseEntity = new ResponseEntity<>(emp, getHttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -51,7 +51,7 @@ public class EmployeeResourceImpl implements EmployeeResource {
     }
 
     @Override
-    public ResponseEntity<String> addEmployee(@RequestBody Map<String,Object> employeeMap){
+    public ResponseEntity<String> addEmployee(@RequestBody Map<String, Object> employeeMap) {
         ObjectMapper oMapper = new ObjectMapper();
         Employee employee = new Employee();
         employee.setId(Integer.valueOf(employeeMap.get("id").toString()));
@@ -62,18 +62,18 @@ public class EmployeeResourceImpl implements EmployeeResource {
         Address address = oMapper.convertValue(obj, Address.class);
         employee.setAddress(address);
         try {
-            if (iRepository.persist(employee)){
+            if (iRepository.persist(employee)) {
                 ResponseEntity<String> responseEntity = new ResponseEntity<>("Employee got added successfully !", getHttpHeaders(), HttpStatus.CREATED);
                 return responseEntity;
-            }else{
+            } else {
                 ResponseEntity<String> responseEntity = new ResponseEntity<>("Employee already exists !", getHttpHeaders(), HttpStatus.OK);
                 return responseEntity;
             }
-        }catch(SQLException sqle){
+        } catch (SQLException sqle) {
             sqle.printStackTrace();
             ResponseEntity<String> responseEntity = new ResponseEntity<>("Internal Server Error", getHttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
             return responseEntity;
-        }catch(NullPointerException npe){
+        } catch (NullPointerException npe) {
             npe.printStackTrace();
             ResponseEntity<String> responseEntity = new ResponseEntity<>("Internal Server Error", getHttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
             return responseEntity;
@@ -81,7 +81,7 @@ public class EmployeeResourceImpl implements EmployeeResource {
 
     }
 
-    static HttpHeaders getHttpHeaders(){
+    static HttpHeaders getHttpHeaders() {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         return httpHeaders;
