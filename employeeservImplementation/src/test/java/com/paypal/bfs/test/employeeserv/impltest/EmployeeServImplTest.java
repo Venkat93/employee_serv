@@ -20,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.paypal.bfs.test.employeeserv.repositories.IRepository;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EmployeeServImplTest {
@@ -51,11 +53,40 @@ public class EmployeeServImplTest {
         Assert.assertEquals(responseEntity, employeeResourceImpl.employeeGetById("205"));
     }
 
-    /*@Test
-    public void addEmployee(){
-        employeeResourceImpl.addEmployee()
-    }*/
+    @Test
+    public void addEmployee() throws SQLException {
+        Mockito.doReturn(true).when(iRepository).persist(Mockito.any());
+        Assert.assertEquals("Employee got added successfully !", employeeResourceImpl.addEmployee(getEmployeeRequestObj()).getBody());
+    }
 
+    @Test
+    public void addEmployeeFalseCase() throws SQLException {
+        Mockito.doReturn(false).when(iRepository).persist(Mockito.any());
+        Assert.assertEquals("Employee already exists !" ,employeeResourceImpl.addEmployee(getEmployeeRequestObj()).getBody());
+    }
+
+
+    public Map<String,Object> getEmployeeRequestObj(){
+        Map<String,Object> requestMap = new HashMap<>();
+        requestMap.put("id","205");
+        requestMap.put("firstName","pooja");
+        requestMap.put("lastName","eaga");
+        requestMap.put("date_of_birth","Nov 02 1993");
+        requestMap.put("address",getAddress());
+
+        return requestMap;
+    }
+
+    public Address getAddress(){
+        Address address = new Address();
+        address.setLine1("3503 Aston Manor ct");
+        address.setLine2("apt 203");
+        address.setCity("Silver Spring");
+        address.setState("MD");
+        address.setCountry("USA");
+        address.setZipCode(20904);
+        return address;
+    }
 
 
 
