@@ -24,6 +24,7 @@ import java.sql.SQLException;
 public class EmployeeResourceImpl implements EmployeeResource {
 
     private final IRepository iRepository;
+    public static StringBuilder badRequestResponse = new StringBuilder("Invalid input, ");
 
     public EmployeeResourceImpl(IRepository iRepository) {
         this.iRepository = iRepository;
@@ -35,10 +36,10 @@ public class EmployeeResourceImpl implements EmployeeResource {
         Integer employeeId = Integer.parseInt(id);
         try {
             Employee emp = iRepository.retrive(employeeId);
-            if(emp.getId() != null) {
+            if (emp.getId() != null) {
                 ResponseEntity<Employee> responseEntity = new ResponseEntity<>(emp, getHttpHeaders(), HttpStatus.OK);
                 return responseEntity;
-            }else{
+            } else {
                 throw new EmployeeNotFoundException("Employee not found !");
             }
         } catch (SQLException sqle) {
@@ -51,7 +52,7 @@ public class EmployeeResourceImpl implements EmployeeResource {
             Employee emp = null;
             ResponseEntity<Employee> responseEntity = new ResponseEntity<>(emp, getHttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
             return responseEntity;
-        } catch (EmployeeNotFoundException enfe){
+        } catch (EmployeeNotFoundException enfe) {
             enfe.printStackTrace();
             Employee emp = null;
             ResponseEntity<Employee> responseEntity = new ResponseEntity<>(emp, getHttpHeaders(), HttpStatus.NOT_FOUND);
@@ -84,7 +85,8 @@ public class EmployeeResourceImpl implements EmployeeResource {
             return responseEntity;
         } catch (BadRequestException bre) {
             bre.printStackTrace();
-            ResponseEntity<String> responseEntity = new ResponseEntity<>("Invalid Input", getHttpHeaders(), HttpStatus.BAD_REQUEST);
+            ResponseEntity<String> responseEntity = new ResponseEntity<>(badRequestResponse.toString(), getHttpHeaders(), HttpStatus.BAD_REQUEST);
+            badRequestResponse.delete(15, badRequestResponse.length());
             return responseEntity;
         }
 
