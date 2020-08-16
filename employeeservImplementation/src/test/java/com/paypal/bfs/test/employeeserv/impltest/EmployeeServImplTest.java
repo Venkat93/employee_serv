@@ -84,7 +84,7 @@ public class EmployeeServImplTest {
         requestMap.put("id", "205");
         requestMap.put("firstName", "Venkata");
         requestMap.put("lastName", "vanukuri");
-        requestMap.put("date_of_birth", "Nov 02 1992");
+        requestMap.put("date_of_birth", "11-02-1992");
         requestMap.put("address", getAddress());
 
         return requestMap;
@@ -107,7 +107,7 @@ public class EmployeeServImplTest {
         emp.setId(205);
         emp.setFirstName("venkata");
         emp.setLastName("vanukuri");
-        emp.setDateOfBirth("Nov 02 1992");
+        emp.setDateOfBirth("11-02-1992");
         emp.setAddress(getAddress());
         return emp;
 
