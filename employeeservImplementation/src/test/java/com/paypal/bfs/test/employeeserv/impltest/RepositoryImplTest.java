@@ -11,6 +11,9 @@ import org.mockito.*;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
+/*import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;*/
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,17 +23,16 @@ import java.sql.SQLException;
 public class RepositoryImplTest {
 
     @InjectMocks
-    @Spy
     private RepositoryImpl repositoryImpl = new RepositoryImpl();
 
-    @Mock
+    /*@Mock
     Connection connection;
 
     @Mock
     PreparedStatement preparedStatement;
 
     @Mock
-    ResultSet resultSet;
+    ResultSet resultSet;*/
 
     @Before
     public void setUp() {
@@ -43,6 +45,10 @@ public class RepositoryImplTest {
 
     @Test
     public void persist() throws SQLException, NullPointerException {
+        Connection connection = Mockito.mock(Connection.class);
+        PreparedStatement preparedStatement = Mockito.mock(PreparedStatement.class);
+        ResultSet resultSet = Mockito.mock(ResultSet.class);
+        RepositoryImpl repositoryImpl = Mockito.spy(RepositoryImpl.class);
         Mockito.doReturn(connection).when(repositoryImpl).getConnection();
         Mockito.doReturn(preparedStatement).when(connection).prepareStatement(Mockito.anyString());
         Mockito.doNothing().when(preparedStatement).setLong(Mockito.anyInt(), Mockito.anyLong());
@@ -55,7 +61,7 @@ public class RepositoryImplTest {
         Assert.assertEquals(true, repositoryImpl.persist(getEmployee()));
     }
 
-    @Test
+    /*@Test
     public void retrive() throws SQLException, NullPointerException {
         Mockito.doReturn(connection).when(repositoryImpl).getConnection();
         Mockito.doReturn(preparedStatement).when(connection).prepareStatement(Mockito.anyString());
@@ -74,6 +80,16 @@ public class RepositoryImplTest {
         Mockito.when(resultSet.getInt("zip")).thenReturn(75074);
 
         Assert.assertEquals(getEmployee().getId(), repositoryImpl.retrive(205L).getId());
+    }*/
+
+    @Test
+    public void persistToDB() throws SQLException, NullPointerException{
+        repositoryImpl.persist(getEmployee());
+    }
+
+    @Test
+    public void retriveFromDB() throws SQLException, NullPointerException{
+        repositoryImpl.retrive(205).getId();
     }
 
     @Test

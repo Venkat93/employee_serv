@@ -29,22 +29,25 @@ public class RepositoryImpl implements IRepository {
         //try {
         Connection con = getConnection();
 
-        PreparedStatement pstmt1 = con.prepareStatement("select * from employee where id = ? and firstname = ? and lastname = ? and dob=? and line1=? and line2=?" +
-                "and city=? and state=? and country=? and zip=?");
-        pstmt1.setLong(1, emp.getId());
-        pstmt1.setString(2, emp.getFirstName());
+        /*String qry = "select * from employee where id = ? and firstname = ? and lastname = ? and dob=? and line1=?" +
+                "and city=? and state=? and country=? and zip=? and line2 " + (emp.getAddress().getLine2()==null?"IS NULL":"= ?");*/
+        String qry = "select * from employee where id = ?";
+        PreparedStatement pstmt1 = con.prepareStatement(qry);
+        pstmt1.setInt(1, emp.getId());
+        /*pstmt1.setString(2, emp.getFirstName());
         pstmt1.setString(3, emp.getLastName());
         pstmt1.setString(4, emp.getDateOfBirth().toString());
         pstmt1.setString(5, emp.getAddress().getLine1());
-        pstmt1.setString(6, emp.getAddress().getLine2());
-        pstmt1.setString(7, emp.getAddress().getCity());
-        pstmt1.setString(8, emp.getAddress().getState());
-        pstmt1.setString(9, emp.getAddress().getCountry());
-        pstmt1.setInt(10, emp.getAddress().getZipCode());
 
+        pstmt1.setString(6, emp.getAddress().getCity());
+        pstmt1.setString(7, emp.getAddress().getState());
+        pstmt1.setString(8, emp.getAddress().getCountry());
+        pstmt1.setInt(9, emp.getAddress().getZipCode());
+        if(emp.getAddress().getLine2()!=null){
+            pstmt1.setString(10, emp.getAddress().getLine2());
+        }*/
         ResultSet rs1 = pstmt1.executeQuery();
         if (!rs1.next()) {
-
             PreparedStatement pstmt = con.prepareStatement("INSERT INTO employee (id, firstname, lastname, dob, line1, line2, city, state, country, zip) VALUES (?,?,?,?,?,?,?,?,?,?)");
             pstmt.setLong(1, emp.getId());
             pstmt.setString(2, emp.getFirstName());
@@ -72,7 +75,7 @@ public class RepositoryImpl implements IRepository {
 
 
     @Override
-    public Employee retrive(Long id) throws SQLException, NullPointerException {
+    public Employee retrive(Integer id) throws SQLException, NullPointerException {
         //try {
         Connection con = getConnection();
         PreparedStatement pstmt = con.prepareStatement("select * from employee where id = ?");

@@ -1,10 +1,10 @@
 package com.paypal.bfs.test.employeeserv.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.paypal.bfs.test.employeeserv.api.EmployeeResource;
-import com.paypal.bfs.test.employeeserv.api.model.Address;
 import com.paypal.bfs.test.employeeserv.api.model.Employee;
+import com.paypal.bfs.test.employeeserv.exception.BadRequestException;
 import com.paypal.bfs.test.employeeserv.repositories.IRepository;
+import com.paypal.bfs.test.employeeserv.validation.InputValidation;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,8 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.sql.SQLException;
-import java.util.Map;
+
 
 /**
  * Implementation class for employee resource.
@@ -30,7 +31,7 @@ public class EmployeeResourceImpl implements EmployeeResource {
 
     @Override
     public ResponseEntity<Employee> employeeGetById(String id) {
-        Long employeeId = Long.parseLong(id);
+        Integer employeeId = Integer.parseInt(id);
         try {
             Employee emp = iRepository.retrive(employeeId);
             ResponseEntity<Employee> responseEntity = new ResponseEntity<>(emp, getHttpHeaders(), HttpStatus.OK);
@@ -51,23 +52,18 @@ public class EmployeeResourceImpl implements EmployeeResource {
     }
 
     @Override
-    public ResponseEntity<String> addEmployee(@RequestBody Map<String, Object> employeeMap) {
-        ObjectMapper oMapper = new ObjectMapper();
-        Employee employee = new Employee();
-        employee.setId(Integer.valueOf(employeeMap.get("id").toString()));
-        employee.setFirstName(employeeMap.get("firstName").toString());
-        employee.setLastName(employeeMap.get("lastName").toString());
-        employee.setDateOfBirth(employeeMap.get("date_of_birth").toString());
-        Object obj = employeeMap.get("address");
-        Address address = oMapper.convertValue(obj, Address.class);
-        employee.setAddress(address);
+    public ResponseEntity<String> addEmployee(@Valid @RequestBody Employee employee) {
         try {
-            if (iRepository.persist(employee)) {
-                ResponseEntity<String> responseEntity = new ResponseEntity<>("Employee got added successfully !", getHttpHeaders(), HttpStatus.CREATED);
-                return responseEntity;
+            if (InputValidation.validateInput(employee)) {
+                if (iRepository.persist(employee)) {
+                    ResponseEntity<String> responseEntity = new ResponseEntity<>("Employee got added successfully !", getHttpHeaders(), HttpStatus.CREATED);
+                    return responseEntity;
+                } else {
+                    ResponseEntity<String> responseEntity = new ResponseEntity<>("Employee already exists !", getHttpHeaders(), HttpStatus.OK);
+                    return responseEntity;
+                }
             } else {
-                ResponseEntity<String> responseEntity = new ResponseEntity<>("Employee already exists !", getHttpHeaders(), HttpStatus.OK);
-                return responseEntity;
+                throw new BadRequestException("Invalid Input");
             }
         } catch (SQLException sqle) {
             sqle.printStackTrace();
@@ -76,6 +72,10 @@ public class EmployeeResourceImpl implements EmployeeResource {
         } catch (NullPointerException npe) {
             npe.printStackTrace();
             ResponseEntity<String> responseEntity = new ResponseEntity<>("Internal Server Error", getHttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return responseEntity;
+        } catch (BadRequestException bre) {
+            bre.printStackTrace();
+            ResponseEntity<String> responseEntity = new ResponseEntity<>("Invalid Input", getHttpHeaders(), HttpStatus.BAD_REQUEST);
             return responseEntity;
         }
 
@@ -86,6 +86,5 @@ public class EmployeeResourceImpl implements EmployeeResource {
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         return httpHeaders;
     }
-
 
 }
