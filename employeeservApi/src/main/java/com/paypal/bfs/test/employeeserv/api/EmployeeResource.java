@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.validation.Valid;
-import java.util.Map;
 
 /**
  * Interface for employee resource operations.
@@ -29,6 +28,6 @@ public interface EmployeeResource {
     // ----------------------------------------------------------
 
     @PostMapping("/v1/bfs/add/employees")
-    ResponseEntity<String> addEmployee(@Valid @RequestBody Employee employee);
+    ResponseEntity<Object> addEmployee(@Valid @RequestBody Employee employee);
 
 }

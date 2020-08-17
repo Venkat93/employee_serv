@@ -30,7 +30,7 @@ public class RepositoryImpl implements IRepository {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            if((retrive(emp.getId()) != null)){
+            if ((retrive(emp.getId())).getId() == null) {
                 con = getConnection();
                 pstmt = con.prepareStatement("INSERT INTO employee (id, firstname, lastname, dob, line1, line2, city, state, country, zip) VALUES (?,?,?,?,?,?,?,?,?,?)");
                 pstmt.setInt(1, emp.getId());
@@ -47,60 +47,58 @@ public class RepositoryImpl implements IRepository {
                 return true;
             }
             return false;
-        }
-        finally {
-            if(con != null)
+        } finally {
+            if (con != null)
                 con.close();
-            if(pstmt != null)
+            if (pstmt != null)
                 pstmt.close();
         }
-        }
-
-
-        @Override
-        public Employee retrive (Integer id) throws SQLException, NullPointerException {
-            Connection con = null;
-            PreparedStatement pstmt = null;
-            ResultSet rs = null;
-            Employee emp = new Employee();
-            Address address = new Address();
-            try {
-                con = getConnection();
-                pstmt = con.prepareStatement("select * from employee where id = ?");
-                pstmt.setLong(1, id);
-                rs = pstmt.executeQuery();
-                while (rs.next()) {
-                    emp.setId(rs.getInt("id"));
-                    emp.setFirstName(rs.getString("firstname"));
-                    emp.setLastName(rs.getString("lastname"));
-                    emp.setDateOfBirth(rs.getString("dob"));
-                    address.setLine1(rs.getString("line1"));
-                    address.setLine2(rs.getString("line2"));
-                    address.setCity(rs.getString("city"));
-                    address.setState(rs.getString("state"));
-                    address.setCountry(rs.getString("country"));
-                    address.setZipCode(rs.getInt("zip"));
-                    emp.setAddress(address);
-                }
-                return emp;
-            }
-            finally {
-                if(con != null)
-                    con.close();
-                if(pstmt != null)
-                    pstmt.close();
-            }
-        }
-
-        public Connection getConnection(){
-            try {
-                Class.forName(driverClassName);
-                Connection con = DriverManager.getConnection(url, username, password);
-                return con;
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                return null;
-            }
-        }
-
     }
+
+
+    @Override
+    public Employee retrive(Integer id) throws SQLException, NullPointerException {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Employee emp = new Employee();
+        Address address = new Address();
+        try {
+            con = getConnection();
+            pstmt = con.prepareStatement("select * from employee where id = ?");
+            pstmt.setLong(1, id);
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                emp.setId(rs.getInt("id"));
+                emp.setFirstName(rs.getString("firstname"));
+                emp.setLastName(rs.getString("lastname"));
+                emp.setDateOfBirth(rs.getString("dob"));
+                address.setLine1(rs.getString("line1"));
+                address.setLine2(rs.getString("line2"));
+                address.setCity(rs.getString("city"));
+                address.setState(rs.getString("state"));
+                address.setCountry(rs.getString("country"));
+                address.setZipCode(rs.getInt("zip"));
+                emp.setAddress(address);
+            }
+            return emp;
+        } finally {
+            if (con != null)
+                con.close();
+            if (pstmt != null)
+                pstmt.close();
+        }
+    }
+
+    public Connection getConnection() {
+        try {
+            Class.forName(driverClassName);
+            Connection con = DriverManager.getConnection(url, username, password);
+            return con;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+}

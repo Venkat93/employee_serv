@@ -23,6 +23,10 @@ import java.util.Random;
 @RunWith(MockitoJUnitRunner.class)
 public class RepositoryImplTest {
 
+    private Random rand = new Random();
+    private int upperbound = 999;
+    private int int_random = rand.nextInt(upperbound);
+
     @InjectMocks
     private RepositoryImpl repositoryImpl = new RepositoryImpl();
 
@@ -90,7 +94,7 @@ public class RepositoryImplTest {
 
     @Test
     public void retriveFromDB() throws SQLException, NullPointerException{
-        repositoryImpl.retrive(205).getId();
+        repositoryImpl.retrive(int_random).getId();
     }
 
     @Test
@@ -112,10 +116,6 @@ public class RepositoryImplTest {
 
 
     public Employee getEmployee() {
-
-        Random rand = new Random();
-        int upperbound = 999;
-        int int_random = rand.nextInt(upperbound);
         Employee emp = new Employee();
         emp.setId(int_random);
         emp.setFirstName("venkata");

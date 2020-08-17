@@ -2,6 +2,7 @@ package com.paypal.bfs.test.employeeserv.impltest;
 
 import com.paypal.bfs.test.employeeserv.api.model.Address;
 import com.paypal.bfs.test.employeeserv.api.model.Employee;
+import com.paypal.bfs.test.employeeserv.exception.InternalServerError;
 import com.paypal.bfs.test.employeeserv.impl.EmployeeResourceImpl;
 import org.junit.Assert;
 import org.junit.Test;
@@ -34,20 +35,20 @@ public class EmployeeServImplTest {
     IRepository iRepository;
 
     @Test
-    public void employeeGetById() throws SQLException {
+    public void employeeGetById() throws SQLException, NullPointerException {
         Mockito.doReturn(getEmployee()).when(iRepository).retrive(Mockito.anyInt());
         ResponseEntity<Employee> responseEntity = employeeResourceImpl.employeeGetById("205");
         Assert.assertEquals(getEmployee().getId(), responseEntity.getBody().getId());
     }
 
-    @Test
+    @Test(expected = InternalServerError.class)
     public void employeeGetByIdWithSqlException() throws SQLException, NullPointerException {
         Mockito.doThrow(new SQLException()).when(iRepository).retrive(Mockito.anyInt());
         ResponseEntity<Employee> responseEntity = new ResponseEntity<>(null, getHttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         Assert.assertEquals(responseEntity, employeeResourceImpl.employeeGetById("205"));
     }
 
-    @Test
+    @Test(expected = InternalServerError.class)
     public void employeeGetByIdWithNullPointerException() throws NullPointerException, SQLException {
         Mockito.doThrow(new NullPointerException()).when(iRepository).retrive(Mockito.anyInt());
         ResponseEntity<Employee> responseEntity = new ResponseEntity<>(null, getHttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -57,22 +58,22 @@ public class EmployeeServImplTest {
     @Test
     public void addEmployee() throws SQLException {
         Mockito.doReturn(true).when(iRepository).persist(Mockito.any());
-        Assert.assertEquals("Employee got added successfully !", employeeResourceImpl.addEmployee(getEmployee()).getBody());
+        Assert.assertEquals(HttpStatus.CREATED, employeeResourceImpl.addEmployee(getEmployee()).getStatusCode());
     }
 
     @Test
     public void addEmployeeFalseCase() throws SQLException, NullPointerException {
         Mockito.doReturn(false).when(iRepository).persist(Mockito.any());
-        Assert.assertEquals("Employee already exists !", employeeResourceImpl.addEmployee(getEmployee()).getBody());
+        Assert.assertEquals(HttpStatus.OK, employeeResourceImpl.addEmployee(getEmployee()).getStatusCode());
     }
 
-    @Test
+    @Test(expected = InternalServerError.class)
     public void addEmployeeWithSqlException() throws SQLException, NullPointerException {
         Mockito.doThrow(new SQLException()).when(iRepository).persist(Mockito.any());
         Assert.assertEquals("Internal Server Error", employeeResourceImpl.addEmployee(getEmployee()).getBody());
     }
 
-    @Test
+    @Test(expected = InternalServerError.class)
     public void addEmployeeWithNullPointerException() throws SQLException, NullPointerException {
         Mockito.doThrow(new SQLException()).when(iRepository).persist(Mockito.any());
         Assert.assertEquals("Internal Server Error", employeeResourceImpl.addEmployee(getEmployee()).getBody());
