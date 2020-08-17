@@ -37,57 +37,49 @@ public class EmployeeResourceImpl implements EmployeeResource {
         try {
             Employee emp = iRepository.retrive(employeeId);
             if (emp.getId() != null) {
-                ResponseEntity<Employee> responseEntity = new ResponseEntity<>(emp, getHttpHeaders(), HttpStatus.OK);
-                return responseEntity;
+                return getResponseEntity(Employee.class, emp, getHttpHeaders(), HttpStatus.OK);
             } else {
                 throw new EmployeeNotFoundException("Employee not found !");
             }
         } catch (SQLException sqle) {
             sqle.printStackTrace();
             Employee emp = null;
-            ResponseEntity<Employee> responseEntity = new ResponseEntity<>(emp, getHttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
-            return responseEntity;
+            return getResponseEntity(Employee.class, emp, getHttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (NullPointerException npe) {
             npe.printStackTrace();
             Employee emp = null;
-            ResponseEntity<Employee> responseEntity = new ResponseEntity<>(emp, getHttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
-            return responseEntity;
+            return getResponseEntity(Employee.class, emp, getHttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (EmployeeNotFoundException enfe) {
             enfe.printStackTrace();
             Employee emp = null;
-            ResponseEntity<Employee> responseEntity = new ResponseEntity<>(emp, getHttpHeaders(), HttpStatus.NOT_FOUND);
-            return responseEntity;
+            return getResponseEntity(Employee.class, emp, getHttpHeaders(), HttpStatus.NOT_FOUND);
         }
 
     }
 
     @Override
-    public ResponseEntity<String> addEmployee(@Valid @RequestBody Employee employee) {
+    public ResponseEntity<Object> addEmployee(@Valid @RequestBody Employee employee) {
         try {
             if (InputValidation.validateInput(employee)) {
                 if (iRepository.persist(employee)) {
-                    ResponseEntity<String> responseEntity = new ResponseEntity<>("Employee got added successfully !", getHttpHeaders(), HttpStatus.CREATED);
-                    return responseEntity;
+                    return getResponseEntity(Object.class,"Employee got added successfully !", getHttpHeaders(), HttpStatus.CREATED);
                 } else {
-                    ResponseEntity<String> responseEntity = new ResponseEntity<>("Employee already exists !", getHttpHeaders(), HttpStatus.OK);
-                    return responseEntity;
+                    return getResponseEntity(Object.class,"Employee already exists !", getHttpHeaders(), HttpStatus.OK);
                 }
             } else {
                 throw new BadRequestException("Invalid Input");
             }
         } catch (SQLException sqle) {
             sqle.printStackTrace();
-            ResponseEntity<String> responseEntity = new ResponseEntity<>("Internal Server Error", getHttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
-            return responseEntity;
+            return getResponseEntity(Object.class,"Internal Server Error", getHttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (NullPointerException npe) {
             npe.printStackTrace();
-            ResponseEntity<String> responseEntity = new ResponseEntity<>("Internal Server Error", getHttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
-            return responseEntity;
+            return getResponseEntity(Object.class,"Internal Server Error", getHttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (BadRequestException bre) {
             bre.printStackTrace();
-            ResponseEntity<String> responseEntity = new ResponseEntity<>(badRequestResponse.toString(), getHttpHeaders(), HttpStatus.BAD_REQUEST);
+            return getResponseEntity(Object.class,badRequestResponse.toString(), getHttpHeaders(), HttpStatus.BAD_REQUEST);
+        }finally {
             badRequestResponse.delete(15, badRequestResponse.length());
-            return responseEntity;
         }
 
     }
@@ -96,6 +88,11 @@ public class EmployeeResourceImpl implements EmployeeResource {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         return httpHeaders;
+    }
+
+    public <T> ResponseEntity<T> getResponseEntity(Class<T> classType, T responseBody, HttpHeaders httpHeaders, HttpStatus httpStatus){
+        ResponseEntity<T> responseEntity = new ResponseEntity<>(responseBody,httpHeaders,httpStatus);
+        return responseEntity;
     }
 
 }

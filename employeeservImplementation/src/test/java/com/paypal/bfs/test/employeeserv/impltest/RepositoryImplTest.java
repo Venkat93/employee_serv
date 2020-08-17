@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Random;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RepositoryImplTest {
@@ -111,8 +112,12 @@ public class RepositoryImplTest {
 
 
     public Employee getEmployee() {
+
+        Random rand = new Random();
+        int upperbound = 999;
+        int int_random = rand.nextInt(upperbound);
         Employee emp = new Employee();
-        emp.setId(205);
+        emp.setId(int_random);
         emp.setFirstName("venkata");
         emp.setLastName("vanukuri");
         emp.setDateOfBirth("Nov 02 1992");
